@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Note Details - Note Taking App</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Add your custom styles here */
+    .note-container {
+      max-width: 800px;
+      margin: 50px auto;
+    }
+
+    .note {
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+
+    .note-title {
+      font-weight: bold;
+      margin-bottom: 5%;
+    }
+
+    .note-body p {
+      margin: 0; /* Remove default margin */
+      padding: 0; /* Remove default padding */
+    }
+
+    .action-btns {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navigation bar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/notes_list">Note Taking App</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/manage_account">Manage Account</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#logout">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Note details -->
+  <div class="container note-container">
+    <div class="note">
+      <h2 class="note-title">Note Title</h2>
+      <div class="note-body">
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod magna vel ullamcorper ultricies. Phasellus eget urna dignissim, vehicula enim eget, malesuada est. Nulla facilisi. Donec pharetra metus in nisl convallis, a ullamcorper elit pharetra. Proin vel posuere eros. Sed ut sapien tellus. Nam at eros at odio malesuada convallis.
+        </p>
+      </div>
+      <div class="action-btns">
+        <button class="btn btn-danger mr-2">Delete</button>
+        <a class="btn btn-primary" href="/update_notes">Update</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS and jQuery (required for Bootstrap) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
