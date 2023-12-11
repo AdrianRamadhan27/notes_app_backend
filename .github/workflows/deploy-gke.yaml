@@ -6,77 +6,58 @@ on:
       - main
 
 env:
-  PROJECT_ID: jarkom-adrian
-  PROJECT_NUMBER: 72158470973
-
-  CLUSTER: clouddemo-linux
-  CLUSTER_ZONE: asia-southeast1-a
-
-  REPOSITORY: clouddemo
-  REPOSITORY_REGION: asia-southeast1
-
-  IMAGE: clouddemo
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: autopilot-cluster-1    # cluster name
+  GKE_ZONE: asia-southeast1   # cluster zone
+  IMAGE: tk-kowan # image name
+  IMAGE_TAG: latest # image tag
+  GAR_ZONE: asia-southeast1 # artifact registry zone
+  GAR_REPO: tk-kowan # artifact registry repository
 
 jobs:
-  build:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
+    environment: production
 
     steps:
     - name: Checkout
       uses: actions/checkout@v3
 
-    #
-    # Authenticate to Google Cloud using workload identity federation
-    #
+    # Setup gcloud CLI
     - id: 'auth'
-      name: 'Obtain access token by using workload identity federation'
       uses: 'google-github-actions/auth@v0'
       with:
-        create_credentials_file: true
-        token_format: access_token
-        workload_identity_provider: projects/${{ env.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-actions/providers/github-actions-oidc
-        service_account: github-actions-workflow@${{ env.PROJECT_ID }}.iam.gserviceaccount.com
+        credentials_json: '${{ secrets.GKE_SA_KEY }}'
 
-    - name: Connect to Artifact Registry
+    # Configure Docker to use the gcloud command-line tool as a credential
+    # helper for authentication
+    - name: Docker configuration
       run: |-
-        echo ${{ steps.auth.outputs.access_token }} | docker login -u oauth2accesstoken --password-stdin https://${{ env.REPOSITORY_REGION }}-docker.pkg.dev
+        gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://$GAR_ZONE-docker.pkg.dev
 
-    - name: Connect to GKE
+    # Get the GKE credentials so we can deploy to the cluster
+    - name: Set up GKE credentials
       uses: google-github-actions/get-gke-credentials@v0
       with:
-        cluster_name: ${{ env.CLUSTER }}
-        location: ${{ env.CLUSTER_ZONE }}
+        cluster_name: ${{ env.GKE_CLUSTER }}
+        location: ${{ env.GKE_ZONE }}
 
-    #
-    # Build the .NET code
-    #
-    - name: Build solution
+    # Build the Docker image
+    - name: Build
       run: |-
-        dotnet publish applications/clouddemo/netcore/CloudDemo.MvcCore.sln \
-            --configuration Release \
-            --framework net6.0
+        docker build \
+          --tag "$GAR_ZONE-docker.pkg.dev/$PROJECT_ID/$GAR_REPO/$IMAGE:$IMAGE_TAG" \
+          --build-arg GITHUB_SHA="$GITHUB_SHA" \
+          --build-arg GITHUB_REF="$GITHUB_REF" \
+          .
+    # Push the Docker image to Google Container Registry
+    - name: Publish
+      run: |-
+        docker push "$GAR_ZONE-docker.pkg.dev/$PROJECT_ID/$GAR_REPO/$IMAGE:$IMAGE_TAG"
 
-    #
-    # Build the Docker image and push it to Artifact Registry
-    #
-    - name: Create image tag
-      run: echo "IMAGE_TAG=${{ env.REPOSITORY_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE }}:$GITHUB_SHA" >> $GITHUB_ENV
-
-    - name: Lock image version in deployment.yaml
-      run: sed -i 's|CLOUDDEMO_IMAGE|${{ env.IMAGE_TAG }}|g' applications/clouddemo/netcore/deployment.yaml
-
-    - name: Build Docker image
-      run: docker build --tag "${{ env.IMAGE_TAG }}" applications/clouddemo/netcore
-
-    - name: Publish Docker image to Google Artifact Registry
-      run: docker push "${{ env.IMAGE_TAG }}"
-
-    #
-    # Deploy to GKE
-    #
-    - name: Deploy to GKE
-      run: kubectl apply -f applications/clouddemo/netcore/deployment.yaml
-    
+    # Deploy the Docker image to the GKE cluster
+    - name: Deploy
+      run: |-
+        kubectl apply -f deploy.yml
+        kubectl get pods

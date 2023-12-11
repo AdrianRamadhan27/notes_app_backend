@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notes_app_backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notes_app_backend
+  template:
+    metadata:
+      labels:
+        app: notes_app_backend
+    spec:
+      containers:
+        - name: notes_app_backend
+          image: voizcrack/proyek-kowan:latest
+          ports:
+            - containerPort: 8000
+      env:
+        - name: DJANGO_SETTINGS_MODULE
+          value: "notes_app_backend.settings.production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notes_app_backend
+spec:
+  selector:
+    app: notes_app_backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: LoadBalancer
