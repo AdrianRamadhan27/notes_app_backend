@@ -51,7 +51,7 @@
           <a class="nav-link" href="/manage_account">Manage Account</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#logout">Logout</a>
+          <a class="nav-link" href="/logout">Logout</a>
         </li>
       </ul>
     </div>
@@ -60,15 +60,16 @@
   <!-- Note details -->
   <div class="container note-container">
     <div class="note">
-      <h2 class="note-title">Note Title</h2>
+      <h2 class="note-title">{{note.note_title}}</h2>
       <div class="note-body">
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod magna vel ullamcorper ultricies. Phasellus eget urna dignissim, vehicula enim eget, malesuada est. Nulla facilisi. Donec pharetra metus in nisl convallis, a ullamcorper elit pharetra. Proin vel posuere eros. Sed ut sapien tellus. Nam at eros at odio malesuada convallis.
+          {{note.note_body}}
         </p>
       </div>
       <div class="action-btns">
-        <button class="btn btn-danger mr-2">Delete</button>
-        <a class="btn btn-primary" href="/update_notes">Update</a>
+        <a href="{% url 'notes:delete_notes' note.id %}" class="btn btn-danger mr-2">Delete</a>
+        <a class="btn btn-primary mr-2" href="{% url 'notes:update_notes' note.id%}">Update</a>
+        <a class="btn btn-primary" href="{% url 'notes:notes_list' %}">Go Back</a>
       </div>
     </div>
   </div>

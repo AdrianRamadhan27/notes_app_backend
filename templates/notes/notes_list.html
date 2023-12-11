@@ -58,11 +58,13 @@
             <a class="nav-link" href="/manage_account">Manage Account</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#logout">Logout</a>
+          <a class="nav-link" href="/logout">Logout</a>
         </li>
       </ul>
     </div>
   </nav>
+
+
 
   <!-- Notes list -->
   <div class="container notes-container">
@@ -73,34 +75,20 @@
         <a class="btn btn-primary" id="create-button" href="/create_notes">Create Note</a>
     </div>
     
-    <!-- Sample Note 1 -->
-    <div class="note">
-      <button class="btn btn-danger delete-btn">Delete</button>
-      <h4 class="note-title">Note Title 1</h4>
-      <p class="note-body-preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod magna vel
-        ullamcorper ultricies.</p>
-      <a href="/notes">View Details</a>
-    </div>
 
-    <!-- Sample Note 2 -->
-    <div class="note">
-      <button class="btn btn-danger delete-btn">Delete</button>
-      <h4 class="note-title">Note Title 2</h4>
-      <p class="note-body-preview">Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-      <a href="/notes">View Details</a>
-    </div>
-
-    <!-- Sample Note 3 -->
-    <div class="note">
-      <button class="btn btn-danger delete-btn">Delete</button>
-      <h4 class="note-title">Note Title 3</h4>
-      <p class="note-body-preview">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-        ex ea commodo consequat.</p>
-      <a href="/notes">View Details</a>
-    </div>
-
-    <!-- Add more notes here -->
-
+    {% if list_note %}
+      <!-- Loop through list_note and display each note -->
+      {% for note in list_note %}
+        <div class="note">
+          <a href="{% url 'notes:delete_notes' note.id %}" class="btn btn-danger delete-btn">Delete</a>
+          <h4 class="note-title">{{ note.note_title }}</h4>
+          <p class="note-body-preview">{{ note.note_body |truncatechars:100}}</p>
+          <a href="{% url 'notes:notes' note.id %}">View Details</a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <h4 class="text-center mt-3">You don't have any notes yet</h4>
+    {% endif %}
   </div>
 
   <!-- Bootstrap JS and jQuery (required for Bootstrap) -->

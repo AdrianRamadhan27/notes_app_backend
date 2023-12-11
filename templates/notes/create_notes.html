@@ -24,17 +24,18 @@
   <!-- Note creation form -->
   <div class="container note-container">
     <h2 class="text-center mb-4">Create Note</h2>
-    <form>
+    <form method="post" action="{% url 'notes:create_notes' %}">
+      {% csrf_token %}
       <div class="form-group">
         <label for="noteTitle">Title</label>
-        <input type="text" class="form-control" id="noteTitle" placeholder="Enter title">
+        <input type="text" name="title" class="form-control" id="noteTitle" placeholder="Enter title">
       </div>
       <div class="form-group">
         <label for="noteBody">Body</label>
-        <textarea class="form-control" id="noteBody" rows="5" placeholder="Enter note content"></textarea>
+        <textarea class="form-control" name="body" id="noteBody" rows="5" placeholder="Enter note content"></textarea>
       </div>
       <a class="btn btn-danger mr-2" href="/notes_list">Cancel</a>
-      <button type="button" class="btn btn-primary">Create</button>
+      <button type="submit" class="btn btn-primary">Create</button>
     </form>
   </div>
 

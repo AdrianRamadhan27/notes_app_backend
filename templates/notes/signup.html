@@ -29,26 +29,32 @@
     <a class="navbar-brand" href="/">Note Taking App</a>
     <a class="btn btn-outline-primary" href="/">Back to Home</a>
   </nav>
-
   <!-- Signup form -->
   <div class="container signup-container">
-    <form class="form-signup">
+    <form class="form-signup" method="post">
+      {% csrf_token %}
       <h2 class="text-center mb-4">Sign Up for Note Taking App</h2>
+      
       <div class="form-group">
-        <label for="inputUsername">Choose a Username</label>
-        <input type="text" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
+        <label for="{{ form.username.id_for_label }}">Choose a Username</label>
+        {{ form.username }}
       </div>
-
+  
       <div class="form-group">
-        <label for="inputPassword">Choose a Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <label for="{{ form.password1.id_for_label }}">Choose a Password</label>
+        {{ form.password1 }}
       </div>
-
+  
+      <div class="form-group">
+        <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+        {{ form.password2 }}
+      </div>
+  
       <button class="btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
-      <p class="text-center mt-3">
-        Already have an account? <a href="/login">Login here</a>
-      </p>
     </form>
+    <p class="text-center mt-3">
+      Already have an account? <a href="/login">Login here</a>
+    </p>
   </div>
 
   <!-- Bootstrap JS and jQuery (required for Bootstrap) -->
