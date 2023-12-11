@@ -11,11 +11,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
-from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -24,7 +22,7 @@ load_dotenv()
 SECRET_KEY = 'django-insecure-7h*ubm&y58kf8^0xvv!0kjuj6r-vn8_7eqz3o7zc5(8@w!kvy$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-PRODUCTION = os.environ.get("DATABASE_NAME") is not None
+PRODUCTION = os.getenv("DATABASE_NAME") is not None
 DEBUG = not PRODUCTION
 
 ALLOWED_HOSTS = ["*"]
@@ -86,11 +84,11 @@ if PRODUCTION:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'HOST': os.environ.get("DATABASE_HOST"),
-            'NAME': os.environ.get("DATABASE_NAME"),
-            'USER': os.environ.get("DATABASE_USER"),
-            'PORT': os.environ.get("DATABASE_PORT"),
-            'PASSWORD': os.environ.get("DATABASE_PASSWORD"),
+            'HOST': os.getenv("DATABASE_HOST"),
+            'NAME': os.getenv("DATABASE_NAME"),
+            'USER': os.getenv("DATABASE_USER"),
+            'PORT': os.getenv("DATABASE_PORT"),
+            'PASSWORD': os.getenv("DATABASE_PASSWORD"),
         }
     }
 else: 
