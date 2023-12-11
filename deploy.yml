@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: notes-app-deployment
 spec:
-  replicas: 3  # Adjust the number of replicas as needed
+  replicas: 3
   selector:
     matchLabels:
       app: notes-app
@@ -17,3 +17,18 @@ spec:
         image: asia-southeast1-docker.pkg.dev/jarkom-adrian/tk-kowan/tk-kowan:latest
         ports:
         - containerPort: 8000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: notes-app-service
+spec:
+  selector:
+    app: notes-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: LoadBalancer
