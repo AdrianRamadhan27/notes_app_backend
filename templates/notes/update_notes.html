@@ -24,17 +24,18 @@
   <!-- Note creation form -->
   <div class="container note-container">
     <h2 class="text-center mb-4">Update Note</h2>
-    <form>
+    <form method="post" action="{% url 'notes:update_notes' note.id %}">
+      {% csrf_token %}
       <div class="form-group">
         <label for="noteTitle">Title</label>
-        <input type="text" class="form-control" id="noteTitle" placeholder="Enter title">
+        <input type="text" class="form-control" id="noteTitle" name="title" value="{{ note.note_title }}" placeholder="Enter title">
       </div>
       <div class="form-group">
         <label for="noteBody">Body</label>
-        <textarea class="form-control" id="noteBody" rows="5" placeholder="Enter note content"></textarea>
+        <textarea class="form-control" id="noteBody" name="body" rows="5" placeholder="Enter note content">{{note.note_body}}</textarea>
       </div>
-      <a class="btn btn-danger mr-2" href="/notes">Cancel</a>
-      <button type="button" class="btn btn-primary">Update</button>
+      <a class="btn btn-danger mr-2" href="{% url 'notes:notes' note.id%}">Cancel</a>
+      <button type="submit" class="btn btn-primary">Update</button>
     </form>
   </div>
 
