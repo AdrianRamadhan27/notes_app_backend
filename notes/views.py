@@ -54,7 +54,9 @@ def manage_account(request):
             messages.success(request, 'Your password was successfully updated!')
             return redirect('notes:notes_list')
         else:
-            messages.error(request, 'Please correct the error below.')
+            for _, error_messages in form.errors.items():
+                for error_message in error_messages:
+                    messages.error(request, f'{error_message}')
     else:
         form = PasswordChangeForm(user=request.user)
 
