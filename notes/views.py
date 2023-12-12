@@ -35,20 +35,21 @@ def signup(request):
         if form.is_valid():
             form.save()
             return redirect('notes:login_user')
+        else:
+            messages.error(request, 'Error in system')
 
     context = {'form': form}
     return render(request, 'notes/signup.html', context)
 
-@login_required(login_url='login_user')
+@login_required(login_url='/login')
 def logout_user(request):
     logout(request)
     return redirect('notes:login_user')
 
-@login_required(login_url='login')
+@login_required(login_url='/login')
 def manage_account(request):
     if request.method == 'POST':
         form = PasswordChangeForm(user=request.user, data=request.POST or None)
-
         if form.is_valid():
             form.save()
             messages.success(request, 'Your password was successfully updated!')
@@ -60,7 +61,7 @@ def manage_account(request):
 
     return render(request, 'notes/manage_account.html', {'form': form})
 
-@login_required(login_url='login')
+@login_required(login_url='/login')
 def notes_list(request):
     user_id     = request.user.id
     user        = User.objects.get(pk=user_id)
@@ -74,7 +75,7 @@ def notes_list(request):
         messages.info(request, 'Error in system')
     return render(request, 'notes/notes_list.html')
 
-@login_required(login_url='login')
+@login_required(login_url='/login')
 def notes(request, note_id):
     note = get_object_or_404(Note, pk=note_id)
     context = {
@@ -82,7 +83,7 @@ def notes(request, note_id):
     }
     return render(request, 'notes/notes.html', context)
 
-@login_required(login_url='login')
+@login_required(login_url='/login')
 def create_notes(request):
     if request.method == 'POST':
         user_id = request.user.id
@@ -93,14 +94,14 @@ def create_notes(request):
         if user is not None:
             note = Note(note_title=title, note_body=body, writter=user)
             note.save()
-            messages.success(request, 'Successfully saved the Note.')
+            messages.success(request, 'Successfully create the Note.')
             return redirect('notes:notes_list')  
         else:
             messages.error(request, 'Error in system')
     
     return render(request, 'notes/create_notes.html')
 
-@login_required(login_url='login')
+@login_required(login_url='/login')
 def update_notes(request, note_id):
     note = get_object_or_404(Note, pk=note_id)
     context = {
@@ -114,7 +115,7 @@ def update_notes(request, note_id):
         return redirect('notes:notes_list')
     return render(request, 'notes/update_notes.html', context)
 
-@login_required(login_url='login')
+@login_required(login_url='/login')
 def delete_notes(request, note_id):
     note = get_object_or_404(Note, pk=note_id)
     note.delete()
