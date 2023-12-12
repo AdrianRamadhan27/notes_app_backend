@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-7h*ubm&y58kf8^0xvv!0kjuj6r-vn8_7eqz3o7zc5(8@w!kvy$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-PRODUCTION = os.getenv("DATABASE_NAME") is not None
+PRODUCTION = os.getenv("DATABASE_URL") is not None
 DEBUG = not PRODUCTION
 
 ALLOWED_HOSTS = ["*"]
@@ -80,16 +81,9 @@ WSGI_APPLICATION = 'notes_backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 if PRODUCTION:
     # Database POSTGRES
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'HOST': os.getenv("DATABASE_HOST"),
-            'NAME': os.getenv("DATABASE_NAME"),
-            'USER': os.getenv("DATABASE_USER"),
-            'PORT': os.getenv("DATABASE_PORT"),
-            'PASSWORD': os.getenv("DATABASE_PASSWORD"),
-        }
-    }
+    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///db.sqlite3")
+    DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
+
 else: 
     DATABASES = {
         'default': {

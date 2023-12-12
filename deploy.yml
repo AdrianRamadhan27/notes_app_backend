@@ -18,6 +18,14 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
+        env:
+          - name: DATABASE_URL
+            value: postgresql://$DATABASE_USER:$DATABASE_PASSWORD@$DATABASE_HOST:$DATABASE_PORT/$DATABASE_NAME
+        command: ["sh", "-c"]
+        args:
+          - |
+            python manage.py migrate
+            gunicorn --bind 0.0.0.0:8000 notes_backend.wsgi:application
 
 ---
 
