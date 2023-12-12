@@ -19,8 +19,8 @@ spec:
         ports:
         - containerPort: 8000
         env:
-          - name: DATABASE_URL
-            value: postgresql://$DATABASE_USER:$DATABASE_PASSWORD@$DATABASE_HOST:5432/$DATABASE_NAME
+            - name: DATABASE_URL
+              value: postgresql://$DATABASE_USER:$DATABASE_PASSWORD@127.0.0.1:5432/$DATABASE_NAME
         resources:
           requests:
             cpu: "100m"
@@ -31,6 +31,28 @@ spec:
           - |
             python manage.py migrate
             gunicorn --bind 0.0.0.0:8000 notes_backend.wsgi:application
+      - image: gcr.io/cloudsql-docker/gce-proxy:1.16
+        name: cloudsql-proxy
+        command: ["/cloud_sql_proxy", "--dir=/cloudsql",
+                  "-instances=jarkom-adrian:asia-southeast1:postgres=tcp:5432",
+                  "-credential_file=/secrets/cloudsql/credentials.json"]
+        volumeMounts:
+          - name: cloudsql-oauth-credentials
+            mountPath: /secrets/cloudsql
+            readOnly: true
+          - name: ssl-certs
+            mountPath: /etc/ssl/certs
+          - name: cloudsql
+            mountPath: /cloudsql
+      volumes:
+        - name: cloudsql-oauth-credentials
+          secret:
+            secretName: cloudsql-oauth-credentials
+        - name: ssl-certs
+          hostPath:
+            path: /etc/ssl/certs
+        - name: cloudsql
+          emptyDir: {}
 
 ---
 
