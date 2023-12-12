@@ -10,7 +10,7 @@ env:
   GKE_CLUSTER: autopilot-cluster-1    # cluster name
   GKE_ZONE: asia-southeast1   # cluster zone
   IMAGE: tk-kowan # image name
-  IMAGE_TAG: ${{ github.sha }} # image tag
+  IMAGE_TAG: latest # image tag
   GAR_ZONE: asia-southeast1 # artifact registry zone
   GAR_REPO: tk-kowan # artifact registry repository
 
