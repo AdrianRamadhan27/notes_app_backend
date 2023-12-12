@@ -19,8 +19,8 @@ spec:
         ports:
         - containerPort: 8000
         env:
-            - name: DATABASE_URL
-              value: postgresql://$DATABASE_USER:$DATABASE_PASSWORD@127.0.0.1:5432/$DATABASE_NAME
+          - name: DATABASE_URL
+            value: postgresql://$DATABASE_USER:$DATABASE_PASSWORD@127.0.0.1:5432/$DATABASE_NAME
         resources:
           requests:
             cpu: "100m"
@@ -33,61 +33,20 @@ spec:
             gunicorn --bind 0.0.0.0:8000 notes_backend.wsgi:application
       - image: gcr.io/cloudsql-docker/gce-proxy:1.16
         name: cloudsql-proxy
-        command: ["/cloud_sql_proxy", "--dir=/cloudsql",
-                  "-instances=jarkom-adrian:asia-southeast1:postgres=tcp:5432",
-                  "-credential_file=/secrets/cloudsql/credentials.json"]
+        command:
+          - "/bin/sh"
+          - "-c"
+          - |
+            wget -O /cloud_sql_proxy https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64
+            chmod +x /cloud_sql_proxy
+            /cloud_sql_proxy -instances=jarkom-adrian:asia-southeast1:postgres=tcp:5432 -credential_file=/secrets/cloudsql/credentials.json
+        securityContext:
+          runAsUser: 2  # non-root user
         volumeMounts:
-          - name: cloudsql-oauth-credentials
-            mountPath: /secrets/cloudsql
-            readOnly: true
-          - name: ssl-certs
-            mountPath: /etc/ssl/certs
-          - name: cloudsql
-            mountPath: /cloudsql
+        - name: cloudsql-instance-credentials
+          mountPath: /secrets/cloudsql
+          readOnly: true
       volumes:
-        - name: cloudsql-oauth-credentials
-          secret:
-            secretName: cloudsql-oauth-credentials
-        - name: ssl-certs
-          hostPath:
-            path: /etc/ssl/certs
-        - name: cloudsql
-          emptyDir: {}
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: notes-app-service
-spec:
-  selector:
-    app: notes-app
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8000
-  type: LoadBalancer
-
----
-
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: notes-app-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: notes-app-deployment
-  minReplicas: 3
-  maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 50
-
-
+      - name: cloudsql-instance-credentials
+        secret:
+          secretName: cloudsql-instance-credentials
