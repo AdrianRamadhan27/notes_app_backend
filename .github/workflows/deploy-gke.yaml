@@ -62,5 +62,3 @@ jobs:
         kubectl apply -f deploy.yml
         kubectl get pods
         kubectl rollout restart deployment notes-app-deployment
-      env:
-          DATABASE_URL: postgresql://postgres:KomputasiAwan23#@db.ompqxvhqqtyrvhexkjww.supabase.co:5432/postgres

@@ -18,9 +18,6 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
-        env:
-          - name: DATABASE_URL
-            value: postgresql://postgres:KomputasiAwan23#@db.ompqxvhqqtyrvhexkjww.supabase.co:5432/postgres
         resources:
           requests:
             cpu: "100m"

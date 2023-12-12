@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-7h*ubm&y58kf8^0xvv!0kjuj6r-vn8_7eqz3o7zc5(8@w!kvy$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-PRODUCTION = os.getenv("DATABASE_URL") is not None
+PRODUCTION = True
 DEBUG = not PRODUCTION
 
 ALLOWED_HOSTS = ["*"]
@@ -81,9 +81,16 @@ WSGI_APPLICATION = 'notes_backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 if PRODUCTION:
     # Database POSTGRES
-    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///db.sqlite3")
-    DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
-
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'HOST': 'db.ompqxvhqqtyrvhexkjww.supabase.co',
+            'NAME': 'postgres',
+            'USER': 'postgres',
+            'PORT': '5432',
+            'PASSWORD': 'KomputasiAwan23#',
+        }
+    }
 else: 
     DATABASES = {
         'default': {
