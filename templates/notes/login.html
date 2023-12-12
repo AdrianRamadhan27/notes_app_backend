@@ -33,6 +33,7 @@
   <!-- Login form -->
   <div class="container login-container">
     <form class="form-signin"  method="post" action="{% url 'notes:login_user' %}">
+      {% csrf_token %}
       <h2 class="text-center mb-4">Login</h2>
       <div class="form-group">
         <label for="inputUsername">Username</label>
