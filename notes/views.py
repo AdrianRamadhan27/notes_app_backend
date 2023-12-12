@@ -39,12 +39,12 @@ def signup(request):
     context = {'form': form}
     return render(request, 'notes/signup.html', context)
 
-@login_required(login_url='login_user')
+@login_required(login_url='notes:login_user')
 def logout_user(request):
     logout(request)
     return redirect('notes:login_user')
 
-@login_required(login_url='login_user')
+@login_required(login_url='notes:login_user')
 def manage_account(request):
     if request.method == 'POST':
         form = PasswordChangeForm(user=request.user, data=request.POST or None)
@@ -60,7 +60,7 @@ def manage_account(request):
 
     return render(request, 'notes/manage_account.html', {'form': form})
 
-@login_required(login_url='login_user')
+@login_required(login_url='notes:login_user')
 def notes_list(request):
     user_id     = request.user.id
     user        = User.objects.get(pk=user_id)
@@ -74,7 +74,7 @@ def notes_list(request):
         messages.info(request, 'Error in system')
     return render(request, 'notes/notes_list.html')
 
-@login_required(login_url='login_user')
+@login_required(login_url='notes:login_user')
 def notes(request, note_id):
     note = get_object_or_404(Note, pk=note_id)
     context = {
@@ -82,7 +82,7 @@ def notes(request, note_id):
     }
     return render(request, 'notes/notes.html', context)
 
-@login_required(login_url='login_user')
+@login_required(login_url='notes:login_user')
 def create_notes(request):
     if request.method == 'POST':
         user_id = request.user.id
@@ -100,7 +100,7 @@ def create_notes(request):
     
     return render(request, 'notes/create_notes.html')
 
-@login_required(login_url='login_user')
+@login_required(login_url='notes:login_user')
 def update_notes(request, note_id):
     note = get_object_or_404(Note, pk=note_id)
     context = {
@@ -114,7 +114,7 @@ def update_notes(request, note_id):
         return redirect('notes:notes_list')
     return render(request, 'notes/update_notes.html', context)
 
-@login_required(login_url='login_user')
+@login_required(login_url='notes:login_user')
 def delete_notes(request, note_id):
     note = get_object_or_404(Note, pk=note_id)
     note.delete()
