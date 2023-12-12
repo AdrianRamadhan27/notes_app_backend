@@ -63,4 +63,4 @@ jobs:
         kubectl get pods
         kubectl rollout restart deployment notes-app-deployment
       env:
-          DATABASE_URL: postgresql://$DATABASE_USER:$DATABASE_PASSWORD@db.ompqxvhqqtyrvhexkjww.supabase.co:5432/$DATABASE_NAME
+          DATABASE_URL: postgresql://postgres:KomputasiAwan23#@db.ompqxvhqqtyrvhexkjww.supabase.co:5432/postgres
